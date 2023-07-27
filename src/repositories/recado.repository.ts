@@ -3,33 +3,33 @@ import { Recado } from "../models/recado.model";
 
 
 export class RecadoRepository {
-    public static criarRecado(recado: Recado){
+    public criarRecado(recado: Recado){
         return recadosDB.push(recado)
     }
 
-    public static listTodosRecados(idUser: string ){
+    public listTodosRecados(idUser: string ){
         return recadosDB.filter(
             (recado) => recado.user.id === idUser && recado.arquivado === false
           );
     }
 
-    public static delete(recadoIndex: number, number: number){
+    public delete(recadoIndex: number, number: number){
         return recadosDB.splice(recadoIndex, number);
     }
 
-    public static buscaRecado(idRecados: string){
+    public buscaRecado(idRecados: string){
         return recadosDB.findIndex(
             (recado) => recado.id === idRecados
           );
     }
 
-    public static update(idRecados: string){
+    public update(idRecados: string){
         return recadosDB.find(
             (recado) => recado.id === idRecados
           )
     }
 
-    public static ListararRecadosArquivados(){
+    public ListararRecadosArquivados(){
         return recadosDB.filter((f) => f.arquivado === true);
     }
 
