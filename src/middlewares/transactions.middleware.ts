@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { recadosDB } from "../../../data/recados";
+import { recadosDB } from "../data/recados";
 
 export class RecadoMiddleware {
   public static RecadoCheck(req: Request, res: Response, next: NextFunction) {
@@ -55,5 +55,4 @@ export class RecadoMiddleware {
       });
     }
   }
-
 }

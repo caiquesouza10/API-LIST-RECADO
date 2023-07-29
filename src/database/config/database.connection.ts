@@ -2,13 +2,16 @@ import { DataSource } from "typeorm";
 import config from "./database.config";
 
 export class Database {
-    private static _connection: DataSource;
+  // PROPRIEDADE
+  private static _connection: DataSource;
 
-    public static get connection() {
-        return this._connection;
-    }
+  // GETTERS - esse tu chama no repositories
+  public static get connection() {
+    return this._connection;
+  }
 
-    public static async connect() {
-        this._connection = await config.initialize();
-    }
+  // METODO - so no index || server
+  public static async connect() {
+    this._connection = await config.initialize();
+  }
 }

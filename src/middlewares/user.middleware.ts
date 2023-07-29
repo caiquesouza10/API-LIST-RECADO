@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { usersDB } from "../../../data/users";
-import { HttpResponse } from "../../../util/http-response.adapter";
+import { usersDB } from "../data/users";
+import { HttpResponse } from "../util/http-response.adapter";
 
 export class UserMiddleware {
   public static validateUserExists(
@@ -13,7 +13,7 @@ export class UserMiddleware {
       const { idUser } = req.params;
 
       const user = usersDB.find((user) => user.id === idUser);
-      
+
       if (!user) {
         return HttpResponse.notFound(res, "User");
       }
@@ -72,14 +72,13 @@ export class UserMiddleware {
     }
   }
 
-
   public static verificaEmailCorreto(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { email} = req.body;
+      const { email } = req.body;
       const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
       if (!email || !email.match(regexEmail)) {
@@ -97,7 +96,6 @@ export class UserMiddleware {
       });
     }
   }
-
 
   public static verificaSenhas(
     req: Request,
@@ -131,7 +129,9 @@ export class UserMiddleware {
     try {
       const { email, password } = req.body;
 
-      const userFound = usersDB.find(user => user.email === email && user.password === password);
+      const userFound = usersDB.find(
+        (user) => user.email === email && user.password === password
+      );
 
       if (!email || !password) {
         return res.status(404).send({

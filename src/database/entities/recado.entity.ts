@@ -1,26 +1,23 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { BaseEntity } from "./base.entity";
+import { UserEntity } from "./user.entity";
 
-@Entity("recado")
-export class RecadoEntity {
-    @PrimaryColumn()
-    id: string;
+@Entity("recados")
+export class RecadoEntity extends BaseEntity {
+  @Column()
+  title!: string;
 
-    @Column()
-    titulo: string;
+  @Column()
+  description!: string;
 
-    @Column()
-    descricao: number;
+  @Column()
+  arquivado!: boolean;
 
-    @Column()
-    arquivado: boolean;
+  @Column({ name: "id_user" })
+  idUser!: string;
 
-    @Column({
-        name: "created_at",
-    })
-    createdAt: Date;
-
-    @Column({
-        name: "id_user",
-    })
-    idUser: string;
+  /// ---- RELACIONAMENTOS ------
+  @ManyToOne(() => UserEntity, (entity) => entity.recados)
+  @JoinColumn({ name: "id_user", referencedColumnName: "id" }) // SEMPRE EXISTE NA TABELA Q TEM A FK
+  user!: UserEntity;
 }

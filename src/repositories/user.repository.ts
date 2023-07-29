@@ -1,23 +1,21 @@
 import { usersDB } from "../data/users";
 import { User } from "../models/user.model";
 
-
-
 export class UserRepository{
 
-    public create(user: User){
+    public static create(user: User){
         return usersDB.push(user)
     }
 
-    public getAllUsers(){
+    public static getAllUsers(){
         return usersDB;
     }
 
-    public listUserId(id: string){
+    public static listUserId(id: string){
         return usersDB.find((user) => user.id === id);
     }
 
-    public login(email: string){
+    public static login(email: string){
         return usersDB.find((user) => user.email === email);
     }
 

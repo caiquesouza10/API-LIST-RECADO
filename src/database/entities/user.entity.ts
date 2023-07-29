@@ -1,21 +1,20 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { BaseEntity } from "./base.entity";
+import { RecadoEntity } from "./recado.entity";
 
-@Entity("user")
-export class UserEntity {
-    @PrimaryColumn()
-    id: string;
+@Entity("users")
+export class UserEntity extends BaseEntity {
+  @Column()
+  name!: string;
 
-    @Column()
-    nome: string;
+  @Column()
+  email!: string;
 
-    @Column()
-    email: string;
+  @Column()
+  password!: string;
 
-    @Column()
-    password: string;
-
-    @Column({
-        name: "created_at",
-    })
-    createdAt: Date;
+  /// ------- RELACIONAMENTOS -------
+  // 0, n | 1, n => OneToMany
+  @OneToMany(() => RecadoEntity, (entity) => entity.user)
+  recados!: RecadoEntity[];
 }

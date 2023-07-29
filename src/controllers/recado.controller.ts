@@ -1,13 +1,13 @@
-import { recadosDB } from "../../data/recados";
-import { usersDB } from "../../data/users";
-import { Recado } from "../../models/recado.model";
+import { recadosDB } from "../data/recados";
+import { usersDB } from "../data/users";
+import { Recado } from "../models/recado.model";
 import { Request, Response } from "express";
 // Constants enumerating the HTTP status codes.
 import { StatusCodes } from "http-status-codes";
-import { HttpResponse } from "../../util/http-response.adapter";
-import { UserController } from "../users/user.controller";
-import { UserRepository } from "../../repositories/user.repository";
-import { RecadoRepository } from "../../repositories/recado.repository";
+import { HttpResponse } from "../util/http-response.adapter";
+import { UserController } from "./user.controller";
+import { UserRepository } from "../repositories/user.repository";
+import { RecadoRepository } from "../repositories/recado.repository";
 
 export class RecadoController {
   public criarRecado(req: Request, res: Response) {
@@ -16,7 +16,7 @@ export class RecadoController {
       const { title, description } = req.body;
 
       // const user = usersDB.find((user) => user.id === idUser);
-      const user = new UserRepository().listUserId(idUser);
+      const user = UserRepository.listUserId(idUser);
 
       if (!user) {
         return res
@@ -26,7 +26,7 @@ export class RecadoController {
 
       const newErrand = new Recado(title, description, user);
       // recadosDB.push(newErrand);
-      new RecadoRepository().criarRecado(newErrand);
+      RecadoRepository.criarRecado(newErrand);
 
       return res.status(StatusCodes.OK).send({
         ok: true,
@@ -47,7 +47,7 @@ export class RecadoController {
       const { title, description } = req.query;
 
       //const user = usersDB.find((user) => user.id === idUser);
-      const user = new UserRepository().listUserId(idUser);
+      const user = UserRepository.listUserId(idUser);
 
       if (!user) {
         return res
@@ -59,12 +59,12 @@ export class RecadoController {
       //   (recado) => recado.user.id === idUser && recado.arquivado === false
       // );
 
-      const result = new RecadoRepository().listTodosRecados(idUser);
+      const result = RecadoRepository.listTodosRecados(idUser);
 
       const recados = result;
 
       const recadoTitle = recados.filter((recado) => recado.title === title);
-      
+
       const recadoDescription = recados.filter(
         (recado) => recado.description === description
       );
@@ -108,14 +108,14 @@ export class RecadoController {
       // const recadoIndex = recadosDB.findIndex(
       //   (recado) => recado.id === idRecados
       // );
-      const recadoIndex = new RecadoRepository().buscaRecado(idRecados);
+      const recadoIndex = RecadoRepository.buscaRecado(idRecados);
 
       if (recadoIndex < 0) {
         return HttpResponse.notFound(res, "Recado");
       }
 
       //const deleteRecado = recadosDB.splice(recadoIndex, 1);
-      const deleteRecado = new RecadoRepository().delete(recadoIndex, 1);
+      const deleteRecado = RecadoRepository.delete(recadoIndex, 1);
 
       return res.status(201).send({
         ok: true,
@@ -142,7 +142,7 @@ export class RecadoController {
       // }
 
       //const recadoIndex = recadosDB.find((recado) => recado.id === idRecados);
-      const recadoIndex = new RecadoRepository().update(idRecados);
+      const recadoIndex = RecadoRepository.update(idRecados);
 
       if (!recadoIndex) {
         return HttpResponse.notFound(res, "Recado");
@@ -178,7 +178,7 @@ export class RecadoController {
       const { idUser } = req.params;
 
       //const existeUser = usersDB.find((user) => user.id === idUser);
-      const existeUser = new UserRepository().listUserId(idUser);
+      const existeUser = UserRepository.listUserId(idUser);
 
       if (!existeUser) {
         return HttpResponse.notFound(res, "User");
@@ -188,7 +188,7 @@ export class RecadoController {
       // targetTask!.arquivado = true;
 
       //const listaRecadosUser = recadosDB.filter((f) => f.arquivado === true);
-      const listaRecadosUser = new RecadoRepository().ListararRecadosArquivados();
+      const listaRecadosUser = RecadoRepository.ListararRecadosArquivados();
 
       return HttpResponse.success(
         res,
