@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseEntity } from "./base.entity";
 import { UserEntity } from "./user.entity";
 
@@ -20,4 +20,9 @@ export class RecadoEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, (entity) => entity.recados)
   @JoinColumn({ name: "id_user", referencedColumnName: "id" }) // SEMPRE EXISTE NA TABELA Q TEM A FK
   user!: UserEntity;
+
+  @BeforeInsert()
+  beforeInsert() {
+      this.arquivado = false;
+  }
 }
