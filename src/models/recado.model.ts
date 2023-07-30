@@ -1,5 +1,6 @@
 import { v4 as createUuid } from "uuid";
 import { User } from "./user.model";
+import { RecadoEntity } from "../database/entities/recado.entity";
 
 export class Recado {
   private _id: string;
@@ -53,4 +54,12 @@ export class Recado {
       arquivado: this._arquivado
     };
   }
+
+  public static create(row: RecadoEntity, user: User) {
+    const recado = new Recado (row.title, row.description, user);
+    recado._id = row.id;
+
+    return recado;
+  }
+
 }

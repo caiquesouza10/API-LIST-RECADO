@@ -1,5 +1,7 @@
 import { v4 as createUuid } from "uuid";
 import { Recado } from "./recado.model";
+import { Entity } from 'typeorm';
+import { UserEntity } from "../database/entities/user.entity";
 
 export class User {
   public id: string;
@@ -31,4 +33,13 @@ export class User {
       email: this._email,
     };
   }
+
+  public static create(row: UserEntity){
+    const user = new User(row.name, row.email, row.password);
+    user.id = row.id
+    
+    return user;
+  }
 }
+
+
