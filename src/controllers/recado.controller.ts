@@ -9,8 +9,10 @@ import { UserController } from "./user.controller";
 import { UserRepository } from "../repositories/user.repository";
 import { RecadoRepository } from "../repositories/recado.repository";
 
+
+
 export class RecadoController {
-  public criarRecado(req: Request, res: Response) {
+  public  criarRecado(req: Request, res: Response) {
     try {
       const { idUser } = req.params;
       const { title, description } = req.body;
@@ -41,13 +43,13 @@ export class RecadoController {
     }
   }
 
-  public listTodosRecados(req: Request, res: Response) {
+  public async listTodosRecados(req: Request, res: Response) {
     try {
       const { idUser } = req.params;
       const { title, description } = req.query;
 
       //const user = usersDB.find((user) => user.id === idUser);
-      const user = UserRepository.listUserId(idUser);
+      const user = await new UserRepository().listUserId(idUser);
 
       if (!user) {
         return res
@@ -59,9 +61,9 @@ export class RecadoController {
       //   (recado) => recado.user.id === idUser && recado.arquivado === false
       // );
 
-      const result = RecadoRepository.listTodosRecados(idUser);
+      const result = await new RecadoRepository().listTodosRecados(idUser);
 
-      const recados = result;
+      const recados = result || [];
 
       const recadoTitle = recados.filter((recado) => recado.title === title);
 

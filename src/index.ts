@@ -13,7 +13,7 @@ app.use("/user", usersRoutes());
 Database.connect().then(() => {
   console.log("DB is connected...");
 
-  app.listen(8080, () => {
+  app.listen(3333, () => {
     console.log("API is running Recados");
   });
 });

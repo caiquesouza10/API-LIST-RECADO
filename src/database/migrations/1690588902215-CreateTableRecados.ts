@@ -37,10 +37,14 @@ export class CreateTableRecados1690588902215 implements MigrationInterface {
           {
             name: "created_at",
             type: "timestamp",
+            isNullable: false,
+            default: "now()",
           },
           {
             name: "updated_at",
             type: "timestamp",
+            isNullable: false,
+            default: "now()",
           },
         ],
         foreignKeys: [

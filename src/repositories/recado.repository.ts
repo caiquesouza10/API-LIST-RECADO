@@ -5,8 +5,13 @@ import { RecadoEntity } from "../database/entities/recado.entity";
 import { Recado } from "../models/recado.model";
 import { UserRepository } from "./user.repository";
 
+// interface ListRecadosParams {
+//   idUser: string;
+// }
+
 export class RecadoRepository {
   private connection = Database.connection.getRepository(RecadoEntity);
+
   public async criarRecado(recado: Recado) {
     const recadoEntity = this.connection.create({
       id: recado.id,
@@ -18,6 +23,11 @@ export class RecadoRepository {
 
     await this.connection.save(recadoEntity);
     //return recadosDB.push(recado)
+    const result = await this.connection.findOne({
+      where: { id: recado.id },
+      relations: { user: true },
+    });
+    return this.mapRowToModel(result!);
   }
 
   public async listTodosRecados(idUser: string) {
@@ -28,10 +38,8 @@ export class RecadoRepository {
     }
 
     const recados = await this.connection.find({
-      where: {
-        idUser,
-        arquivado: Not(false),
-      },
+      where: {idUser, arquivado: Not(false)},
+      relations: { user: true },
     });
 
     if (!recados) {
@@ -81,9 +89,8 @@ export class RecadoRepository {
 
   public async ListararRecadosArquivados() {
     const recados = await this.connection.find({
-      where: {
-        arquivado: Not(true),
-      },
+      where: {arquivado: Not(true)},
+      relations: { user: true },
     });
 
     if (!recados) {
@@ -91,6 +98,7 @@ export class RecadoRepository {
     }
 
     return recados;
+
     //return recadosDB.filter((f) => f.arquivado === true);
   }
 

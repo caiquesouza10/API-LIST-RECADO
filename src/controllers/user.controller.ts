@@ -7,15 +7,15 @@ import { User } from "../models/user.model";
 import { UserRepository } from "../repositories/user.repository";
 
 export class UserController {
-  public create(req: Request, res: Response) {
+  public async create(req: Request, res: Response) {
     try {
       const { name, email, password } = req.body;
-
-      //aqui vai o codigo para validar a senha e no body tenho que colocar o repassword tbm
+      const repository = new UserRepository();
 
       const user = new User(name, email, password);
       //usersDB.push(user);
-      UserRepository.create(user);
+
+      const result = await repository.create(user);
 
       return res.status(201).send({
         ok: true,
@@ -30,25 +30,13 @@ export class UserController {
     }
   }
 
-  public getAllUsers(req: Request, res: Response) {
+  public async getAllUsers(req: Request, res: Response) {
     try {
-      const { email } = req.query;
+      const repository = new UserRepository();
+      const result = await repository.getAllUsers();
 
-      // let result = usersDB;
-      let result = UserRepository.getAllUsers();
+      return HttpResponse.success(res, "User successfuly llisted", result);
 
-      // if (name) {
-      //   result = usersDB.filter((user) => user.name === name);
-      // }
-      if (email) {
-        result = usersDB.filter((user) => user.email === email);
-      }
-
-      return res.status(200).send({
-        ok: true,
-        message: "Users were sucessfully listed",
-        data: result.map((user) => user.toJsonU()),
-      });
     } catch (error: any) {
       return res.status(500).send({
         ok: false,
@@ -57,12 +45,13 @@ export class UserController {
     }
   }
 
-  public listUserId(req: Request, res: Response) {
+  public async listUserId(req: Request, res: Response) {
     try {
       const { id } = req.params;
 
       // const result = usersDB.find((user) => user.id === id);
-      const result = UserRepository.listUserId(id);
+      const repository = new UserRepository();
+      const result = await repository.listUserId(id);
 
       if (!result) {
         return res.status(404).send({
@@ -84,9 +73,10 @@ export class UserController {
     }
   }
 
-  public login(req: Request, res: Response) {
+  public async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
+      const repository = new UserRepository();
 
       if (!email) {
         return HttpResponse.fieldNotProvided(res, "E-mail");
@@ -97,7 +87,7 @@ export class UserController {
       }
 
       //const user = usersDB.find((user) => user.email === email);
-      const user = UserRepository.login(email);
+      const user = await repository.login(email);
 
       if (!user) {
         // return HttpResponse.notFound(res, "User");

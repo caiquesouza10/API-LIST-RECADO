@@ -22,6 +22,10 @@ export class User {
     return this._password;
   }
 
+  public get name() {
+    return this._name;
+  }
+
   public set email(email: string) {
     this._email = email;
   }

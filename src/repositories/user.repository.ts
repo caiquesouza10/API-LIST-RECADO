@@ -4,11 +4,12 @@ import { User } from "../models/user.model";
 import { UserEntity } from "./../database/entities/user.entity";
 
 export class UserRepository {
-  public connection = Database.connection.getRepository(UserEntity);
+  private connection = Database.connection.getRepository(UserEntity);
 
   public async create(user: User) {
     const userEntity = this.connection.create({
       id: user.id,
+      name: user.name,
       email: user.email,
       password: user.password,
     });
@@ -32,12 +33,41 @@ export class UserRepository {
     });
 
     if (!result) {
-      return result;
+      return undefined;
     }
 
     return UserRepository.mapRowToModel(result);
     //return usersDB.find((user) => user.id === id);
   }
+
+  // public async getByPassword(password: string) {
+  //   const result = await this.connection.findOne({ where: { password } });
+
+  //   if (!result) {
+  //     return undefined;
+  //   }
+
+  //   return UserRepository.mapRowToModel(result);
+  // }
+
+  // public async getById(id: string) {
+  //   const result = await this.connection.findOneBy({ id });
+
+  //   if (!result) {
+  //     return undefined;
+  //   }
+  //   return UserRepository.mapRowToModel(result);
+  // }
+
+  // public async getByEmail(email: string) {
+  //   const result = await this.connection.findOne({ where: { email } });
+
+  //   if (!result) {
+  //     return undefined;
+  //   }
+
+  //   return UserRepository.mapRowToModel(result);
+  // }
 
   public async login(email: string) {
     const checkExistUser = await this.connection.findOne({
