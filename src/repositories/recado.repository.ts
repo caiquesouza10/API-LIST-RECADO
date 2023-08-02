@@ -7,7 +7,9 @@ import { UserRepository } from "./user.repository";
 
 interface ListRecadosParams {
   idUser: string;
-  arquivado?:boolean;
+  arquivado?: boolean;
+  title?: any;
+  description?: any;
 }
 
 export class RecadoRepository {
@@ -32,14 +34,21 @@ export class RecadoRepository {
   }
 
   public async listTodosRecados(params: ListRecadosParams) {
-    const checkExistUser = await this.connection.findOne({ where: { idUser: params.idUser } });
+    const checkExistUser = await this.connection.findOne({
+      where: { idUser: params.idUser },
+    });
 
     if (!checkExistUser) {
       return null;
     }
 
     const recados = await this.connection.find({
-      where: {idUser: params.idUser, arquivado: Not(true)},
+      where: {
+        idUser: params.idUser,
+        arquivado: Not(true),
+        title: params.title || undefined,
+        description: params.description,
+      },
       relations: { user: true },
     });
 
@@ -63,11 +72,11 @@ export class RecadoRepository {
 
   public async buscaRecado(id: string) {
     const result = await this.connection.findOneBy({
-        id,
+      id,
     });
 
     if (!result) {
-        return undefined;
+      return undefined;
     }
 
     return this.mapRowToModel(result);
@@ -107,7 +116,7 @@ export class RecadoRepository {
 
   public async ListararRecadosArquivados(params: ListRecadosParams) {
     const recados = await this.connection.find({
-      where: {idUser: params.idUser, arquivado: Not(false)},
+      where: { idUser: params.idUser, arquivado: Not(false) },
       relations: { user: true },
     });
 

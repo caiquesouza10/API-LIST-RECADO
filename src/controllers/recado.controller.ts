@@ -57,33 +57,7 @@ export class RecadoController {
           .send({ ok: false, message: "User was not found" });
       }
 
-      // const result = recadosDB.filter(
-      //   (recado) => recado.user.id === idUser && recado.arquivado === false
-      // );
-
-      const result = await new RecadoRepository().listTodosRecados({idUser: idUser});
-
-      // const recados = result || [];
-
-      // const recadoTitle = recados.filter((recado) => recado.title === title);
-
-      // const recadoDescription = recados.filter(
-      //   (recado) => recado.description === description
-      // );
-
-      // if (title) {
-      //   return res.json({
-      //     message: "Recado filtrada por titulo",
-      //     recado: recadoTitle.map((recado) => recado.toJsonR()),
-      //   });
-      // }
-
-      // if (description) {
-      //   return res.json({
-      //     message: "recado filtrada por descrição",
-      //     recado: recadoDescription.map((recado) => recado.toJsonR()),
-      //   });
-      // }
+      const result = await new RecadoRepository().listTodosRecados({idUser: idUser, title: title, description: description});
 
       return res.status(StatusCodes.OK).send({
         ok: true,
