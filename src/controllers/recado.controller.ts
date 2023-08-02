@@ -119,7 +119,7 @@ export class RecadoController {
       // if (recadoIndex < 0) {
       //   return HttpResponse.notFound(res, "Recado");
       // }
-      if (delitedRecados === 0) {
+      if (delitedRecados < 0) {
         return HttpResponse.notFound(res, "Recado");
       }
 
@@ -133,7 +133,7 @@ export class RecadoController {
       return res.status(201).send({
         ok: true,
         message: "Recado was successfully deleted",
-        data: recados
+        data: recados?.map((recado) => recado.toJsonR())
       });
     } catch (error: any) {
       return res.status(500).send({
@@ -169,16 +169,12 @@ export class RecadoController {
         recadoIndex.arquivado = arquivado;
       }
 
-      await recadoRepository.update(recadoIndex);
-
-      const recados = await recadoRepository.listTodosRecados({
-        idUser: idUser
-      });
+      const recados = await recadoRepository.update(recadoIndex);
 
       return HttpResponse.success(
         res,
         "Recado was successfully updated",
-        recados?.map((recado) => recado.toJsonR())
+        recados
       );
     } catch (error: any) {
       return res.status(500).send({
@@ -194,10 +190,12 @@ export class RecadoController {
       const recadoRepository = new RecadoRepository();
 
       //const existeUser = usersDB.find((user) => user.id === idUser);
-      const existeUser = recadoRepository.getByIRecado(idUser);
+      const user = await new UserRepository().listUserId(idUser);
 
-      if (!existeUser) {
-        return HttpResponse.notFound(res, "User");
+      if (!user) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .send({ ok: false, message: "User was not found" });
       }
 
       //const listaRecadosUser = recadosDB.filter((f) => f.arquivado === true);
@@ -205,11 +203,13 @@ export class RecadoController {
         idUser
       });
 
+      //const result = await new RecadoRepository().ListararRecadosArquivados({idUser: idUser});
+
 
       return HttpResponse.success(
         res,
-        `Recados do  arquivado com sucesso!`,
-        listaRecadosUser
+        `Recados do ${user.name} arquivado com sucesso!`,
+        listaRecadosUser?.map((recado) => recado.toJsonR()),
       );
     } catch (error: any) {
       return res.status(500).send({

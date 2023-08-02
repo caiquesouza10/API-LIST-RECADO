@@ -115,7 +115,7 @@ export class RecadoRepository {
       return null;
     }
 
-    return recados;
+    return recados.map((row) => this.mapRowToModel(row));
 
     //return recadosDB.filter((f) => f.arquivado === true);
   }

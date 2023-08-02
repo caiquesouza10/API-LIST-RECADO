@@ -21,7 +21,7 @@ export class UserController {
       const user = new User(name, email, password);
       //usersDB.push(user);
 
-      const result = await repository.create(user);
+      await repository.create(user);
 
       return res.status(201).send({
         ok: true,
@@ -41,7 +41,7 @@ export class UserController {
       const repository = new UserRepository();
       const result = await repository.getAllUsers();
 
-      return HttpResponse.success(res, "User successfuly llisted", result);
+      return HttpResponse.success(res, "User successfuly llisted", result.map((user) => user.toJsonU()));
 
     } catch (error: any) {
       return res.status(500).send({
