@@ -26,27 +26,27 @@ export class UserMiddleware {
     }
   }
 
-  public static checkEmailExistence(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { email } = req.body;
+  // public static checkEmailExistence(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const { email } = req.body;
 
-      const checkEmail = usersDB.find((e) => e.email === email);
+  //     // const checkEmail = usersDB.find((e) => e.email === email);
 
-      if (checkEmail) {
-        return HttpResponse.existe(res, "Email");
-      }
-      next();
-    } catch (error: any) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
-        ok: false,
-        message: error.toString(),
-      });
-    }
-  }
+  //     if (email) {
+  //       return HttpResponse.existe(res, "Email");
+  //     }
+  //     next();
+  //   } catch (error: any) {
+  //     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+  //       ok: false,
+  //       message: error.toString(),
+  //     });
+  //   }
+  // }
 
   public static verificaCamposVazios(
     req: Request,
@@ -129,21 +129,10 @@ export class UserMiddleware {
     try {
       const { email, password } = req.body;
 
-      const userFound = usersDB.find(
-        (user) => user.email === email && user.password === password
-      );
-
       if (!email || !password) {
         return res.status(404).send({
           ok: false,
           message: "Existem campos vazios, favor preencher",
-        });
-      }
-
-      if (!userFound) {
-        return res.status(400).send({
-          ok: false,
-          message: "Usuario não encontrado! Verifique!!!",
         });
       }
 

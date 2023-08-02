@@ -30,29 +30,29 @@ export class RecadoMiddleware {
     }
   }
 
-  public static RecadoNaoEncontrado(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { idRecados } = req.params;
+  // public static RecadoNaoEncontrado(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const { idRecados } = req.params;
 
-      const recado = recadosDB.find((e) => e.id === idRecados);
+  //     const recado = recadosDB.find((e) => e.id === idRecados);
 
-      if (!recado) {
-        return res.status(400).json({
-          success: false,
-          message: "Recado não encontrado!",
-        });
-      }
+  //     if (!recado) {
+  //       return res.status(400).json({
+  //         success: false,
+  //         message: "Recado não encontrado!",
+  //       });
+  //     }
 
-      next();
-    } catch (error: any) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
-        ok: false,
-        message: error.toString(),
-      });
-    }
-  }
+  //     next();
+  //   } catch (error: any) {
+  //     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+  //       ok: false,
+  //       message: error.toString(),
+  //     });
+  //   }
+  // }
 }

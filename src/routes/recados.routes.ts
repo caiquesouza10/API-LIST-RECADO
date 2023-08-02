@@ -16,16 +16,13 @@ export const RecadosRouter = () => {
 
   app.delete(
     "/:idRecados",
-    [UserMiddleware.validateUserExists, RecadoMiddleware.RecadoNaoEncontrado],
     controller.delete
   );
 
   app.put(
     "/:idRecados",
     [
-      UserMiddleware.validateUserExists,
       RecadoMiddleware.RecadoCheck,
-      RecadoMiddleware.RecadoNaoEncontrado,
     ],
     controller.update
   );

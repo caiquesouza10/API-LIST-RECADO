@@ -12,6 +12,12 @@ export class UserController {
       const { name, email, password } = req.body;
       const repository = new UserRepository();
 
+      const existeByEmail = await repository.getByEmail(email);
+
+      if (existeByEmail) {
+        return HttpResponse.existe(res, "Email já existe no banco!!!");
+      }
+
       const user = new User(name, email, password);
       //usersDB.push(user);
 
@@ -78,6 +84,11 @@ export class UserController {
       const { email, password } = req.body;
       const repository = new UserRepository();
 
+      const login = await new UserRepository().getByEmail(email);
+      const existeByEmail = await repository.getByEmail(email);
+      const existeByPassword = await repository.getByPassword(password);
+
+
       if (!email) {
         return HttpResponse.fieldNotProvided(res, "E-mail");
       }
@@ -86,21 +97,14 @@ export class UserController {
         return HttpResponse.fieldNotProvided(res, "Password");
       }
 
-      //const user = usersDB.find((user) => user.email === email);
-      const user = await repository.login(email);
-
-      if (!user) {
-        // return HttpResponse.notFound(res, "User");
-        return HttpResponse.invalidCredentials(res);
-      }
-
-      if (user.password !== password) {
+      
+      if (!existeByEmail || !existeByPassword) {
         return HttpResponse.invalidCredentials(res);
       }
 
       return HttpResponse.success(res, "Login successfully done", {
-        id: user.id,
-        name: user.email,
+        id: login?.id,
+        name: login?.email,
       });
     } catch (error: any) {
       return HttpResponse.genericError(res, error);

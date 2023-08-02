@@ -5,9 +5,10 @@ import { RecadoEntity } from "../database/entities/recado.entity";
 import { Recado } from "../models/recado.model";
 import { UserRepository } from "./user.repository";
 
-// interface ListRecadosParams {
-//   idUser: string;
-// }
+interface ListRecadosParams {
+  idUser: string;
+  arquivado?:boolean;
+}
 
 export class RecadoRepository {
   private connection = Database.connection.getRepository(RecadoEntity);
@@ -30,15 +31,15 @@ export class RecadoRepository {
     return this.mapRowToModel(result!);
   }
 
-  public async listTodosRecados(idUser: string) {
-    const checkExistUser = await this.connection.findOne({ where: { idUser } });
+  public async listTodosRecados(params: ListRecadosParams) {
+    const checkExistUser = await this.connection.findOne({ where: { idUser: params.idUser } });
 
     if (!checkExistUser) {
       return null;
     }
 
     const recados = await this.connection.find({
-      where: {idUser, arquivado: Not(false)},
+      where: {idUser: params.idUser, arquivado: Not(true)},
       relations: { user: true },
     });
 
@@ -51,9 +52,9 @@ export class RecadoRepository {
     //return recadosDB.filter((recado) => recado.user.id === idUser && recado.arquivado === false );
   }
 
-  public async delete(id: string) {
+  public async delete(idRecado: string) {
     const result = await this.connection.delete({
-      id,
+      id: idRecado,
     });
 
     return result.affected ?? 0;
@@ -87,9 +88,26 @@ export class RecadoRepository {
     //return recadosDB.find((recado) => recado.id === idRecados);
   }
 
-  public async ListararRecadosArquivados() {
+  public async getByIRecado(id: string) {
+    const result = await this.connection.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        user: true,
+      },
+    });
+
+    if (!result) {
+      return undefined;
+    }
+
+    return this.mapRowToModel(result);
+  }
+
+  public async ListararRecadosArquivados(params: ListRecadosParams) {
     const recados = await this.connection.find({
-      where: {arquivado: Not(true)},
+      where: {idUser: params.idUser, arquivado: Not(false)},
       relations: { user: true },
     });
 

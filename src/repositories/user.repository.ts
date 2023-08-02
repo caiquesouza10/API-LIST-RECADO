@@ -25,12 +25,8 @@ export class UserRepository {
     // return usersDB;
   }
 
-  public async listUserId(id: string) {
-    const result = await this.connection.findOne({
-      where: {
-        id,
-      },
-    });
+  public async listUserId(idUser: string) {
+    const result = await this.connection.findOneBy({ id: idUser });
 
     if (!result) {
       return undefined;
@@ -40,34 +36,25 @@ export class UserRepository {
     //return usersDB.find((user) => user.id === id);
   }
 
-  // public async getByPassword(password: string) {
-  //   const result = await this.connection.findOne({ where: { password } });
+  public async getByEmail(email: string) {
+    const result = await this.connection.findOne({ where: { email } });
 
-  //   if (!result) {
-  //     return undefined;
-  //   }
+    if (!result) {
+      return undefined;
+    }
 
-  //   return UserRepository.mapRowToModel(result);
-  // }
+    return UserRepository.mapRowToModel(result);
+  }
 
-  // public async getById(id: string) {
-  //   const result = await this.connection.findOneBy({ id });
+  public async getByPassword(password: string) {
+    const result = await this.connection.findOne({ where: { password } });
 
-  //   if (!result) {
-  //     return undefined;
-  //   }
-  //   return UserRepository.mapRowToModel(result);
-  // }
+    if (!result) {
+      return undefined;
+    }
 
-  // public async getByEmail(email: string) {
-  //   const result = await this.connection.findOne({ where: { email } });
-
-  //   if (!result) {
-  //     return undefined;
-  //   }
-
-  //   return UserRepository.mapRowToModel(result);
-  // }
+    return UserRepository.mapRowToModel(result);
+  }
 
   public async login(email: string) {
     const checkExistUser = await this.connection.findOne({

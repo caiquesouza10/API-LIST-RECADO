@@ -12,13 +12,13 @@ import { RecadoRepository } from "../repositories/recado.repository";
 
 
 export class RecadoController {
-  public  criarRecado(req: Request, res: Response) {
+  public async criarRecado(req: Request, res: Response) {
     try {
       const { idUser } = req.params;
       const { title, description } = req.body;
 
       // const user = usersDB.find((user) => user.id === idUser);
-      const user = UserRepository.listUserId(idUser);
+      const user = await new UserRepository().listUserId(idUser);
 
       if (!user) {
         return res
@@ -28,7 +28,7 @@ export class RecadoController {
 
       const newErrand = new Recado(title, description, user);
       // recadosDB.push(newErrand);
-      RecadoRepository.criarRecado(newErrand);
+      await new RecadoRepository().criarRecado(newErrand);
 
       return res.status(StatusCodes.OK).send({
         ok: true,
@@ -61,34 +61,34 @@ export class RecadoController {
       //   (recado) => recado.user.id === idUser && recado.arquivado === false
       // );
 
-      const result = await new RecadoRepository().listTodosRecados(idUser);
+      const result = await new RecadoRepository().listTodosRecados({idUser: idUser});
 
-      const recados = result || [];
+      // const recados = result || [];
 
-      const recadoTitle = recados.filter((recado) => recado.title === title);
+      // const recadoTitle = recados.filter((recado) => recado.title === title);
 
-      const recadoDescription = recados.filter(
-        (recado) => recado.description === description
-      );
+      // const recadoDescription = recados.filter(
+      //   (recado) => recado.description === description
+      // );
 
-      if (title) {
-        return res.json({
-          message: "Recado filtrada por titulo",
-          recado: recadoTitle.map((recado) => recado.toJsonR()),
-        });
-      }
+      // if (title) {
+      //   return res.json({
+      //     message: "Recado filtrada por titulo",
+      //     recado: recadoTitle.map((recado) => recado.toJsonR()),
+      //   });
+      // }
 
-      if (description) {
-        return res.json({
-          message: "recado filtrada por descrição",
-          recado: recadoDescription.map((recado) => recado.toJsonR()),
-        });
-      }
+      // if (description) {
+      //   return res.json({
+      //     message: "recado filtrada por descrição",
+      //     recado: recadoDescription.map((recado) => recado.toJsonR()),
+      //   });
+      // }
 
       return res.status(StatusCodes.OK).send({
         ok: true,
         message: `Recados successfully listed of user ${user.email}`,
-        data: result.map((recado) => recado.toJsonR()),
+        data: result?.map((recado) => recado.toJsonR()),
       });
     } catch (error: any) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
@@ -98,31 +98,42 @@ export class RecadoController {
     }
   }
 
-  public delete(req: Request, res: Response) {
+  public async delete(req: Request, res: Response) {
     try {
       const { idUser, idRecados } = req.params;
 
-      // const existeUser = usersDB.find((user) => user.id === idUser);
-      // if (!existeUser) {
-      //   return HttpResponse.notFound(res, "User");
+      const result = await new UserRepository().listUserId(idUser);
+
+      if (!result) {
+        return res.status(404).send({
+          ok: false,
+          message: "User was not found",
+        });
+      }
+
+      const recadoRepository = new RecadoRepository();
+
+      const delitedRecados = await recadoRepository.delete(idRecados);
+      //const recadoIndex = RecadoRepository.buscaRecado(idRecados);
+
+      // if (recadoIndex < 0) {
+      //   return HttpResponse.notFound(res, "Recado");
       // }
-
-      // const recadoIndex = recadosDB.findIndex(
-      //   (recado) => recado.id === idRecados
-      // );
-      const recadoIndex = RecadoRepository.buscaRecado(idRecados);
-
-      if (recadoIndex < 0) {
+      if (delitedRecados === 0) {
         return HttpResponse.notFound(res, "Recado");
       }
 
+      const recados = await recadoRepository.listTodosRecados({
+        idUser: idUser,
+      });
+
       //const deleteRecado = recadosDB.splice(recadoIndex, 1);
-      const deleteRecado = RecadoRepository.delete(recadoIndex, 1);
+      //const deleteRecado = RecadoRepository.delete(recadoIndex, 1);
 
       return res.status(201).send({
         ok: true,
         message: "Recado was successfully deleted",
-        data: deleteRecado[0].toJsonR(),
+        data: recados
       });
     } catch (error: any) {
       return res.status(500).send({
@@ -132,19 +143,15 @@ export class RecadoController {
     }
   }
 
-  public update(req: Request, res: Response) {
+  public async update(req: Request, res: Response) {
     try {
       const { idUser, idRecados } = req.params;
 
       const { title, description, arquivado } = req.body;
-
-      // const existeUser = usersDB.find((user) => user.id === idUser);
-      // if (!existeUser) {
-      //   return HttpResponse.notFound(res, "User");
-      // }
+      const recadoRepository = new RecadoRepository();
 
       //const recadoIndex = recadosDB.find((recado) => recado.id === idRecados);
-      const recadoIndex = RecadoRepository.update(idRecados);
+      const recadoIndex = await recadoRepository.getByIRecado(idRecados);
 
       if (!recadoIndex) {
         return HttpResponse.notFound(res, "Recado");
@@ -162,10 +169,16 @@ export class RecadoController {
         recadoIndex.arquivado = arquivado;
       }
 
+      await recadoRepository.update(recadoIndex);
+
+      const recados = await recadoRepository.listTodosRecados({
+        idUser: idUser
+      });
+
       return HttpResponse.success(
         res,
         "Recado was successfully updated",
-        recadoIndex.toJsonR()
+        recados?.map((recado) => recado.toJsonR())
       );
     } catch (error: any) {
       return res.status(500).send({
@@ -175,27 +188,28 @@ export class RecadoController {
     }
   }
 
-  public ListararRecadosArquivados(req: Request, res: Response) {
+  public async ListararRecadosArquivados(req: Request, res: Response) {
     try {
       const { idUser } = req.params;
+      const recadoRepository = new RecadoRepository();
 
       //const existeUser = usersDB.find((user) => user.id === idUser);
-      const existeUser = UserRepository.listUserId(idUser);
+      const existeUser = recadoRepository.getByIRecado(idUser);
 
       if (!existeUser) {
         return HttpResponse.notFound(res, "User");
       }
 
-      // const targetTask = recadosDB.find((f) => f.arquivado === true);
-      // targetTask!.arquivado = true;
-
       //const listaRecadosUser = recadosDB.filter((f) => f.arquivado === true);
-      const listaRecadosUser = RecadoRepository.ListararRecadosArquivados();
+      const listaRecadosUser = await recadoRepository.ListararRecadosArquivados({
+        idUser
+      });
+
 
       return HttpResponse.success(
         res,
-        `Recados do ${existeUser.email} arquivado com sucesso!`,
-        listaRecadosUser.map((recado) => recado.toJsonR())
+        `Recados do  arquivado com sucesso!`,
+        listaRecadosUser
       );
     } catch (error: any) {
       return res.status(500).send({

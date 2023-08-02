@@ -10,7 +10,6 @@ export const usersRoutes = () => {
     "/",
     [
       UserMiddleware.verificaCamposVazios,
-      UserMiddleware.checkEmailExistence,
       UserMiddleware.verificaEmailCorreto,
       UserMiddleware.verificaSenhas,
     ],
