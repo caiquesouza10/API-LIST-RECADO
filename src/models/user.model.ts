@@ -7,7 +7,7 @@ export class User {
   public id: string;
 
   constructor(
-    private _name: string,
+    // private _name: string,
     private _email: string,
     private _password: string
   ) {
@@ -22,9 +22,9 @@ export class User {
     return this._password;
   }
 
-  public get name() {
-    return this._name;
-  }
+  // public get name() {
+  //   return this._name;
+  // }
 
   public set email(email: string) {
     this._email = email;
@@ -33,13 +33,13 @@ export class User {
   public toJsonU() {
     return {
       id: this.id,
-      name: this._name,
+      // name: this._name,
       email: this._email,
     };
   }
 
   public static create(row: UserEntity){
-    const user = new User(row.name, row.email, row.password);
+    const user = new User(row.email, row.password);
     user.id = row.id
     
     return user;

@@ -9,7 +9,7 @@ import { UserRepository } from "../repositories/user.repository";
 export class UserController {
   public async create(req: Request, res: Response) {
     try {
-      const { name, email, password } = req.body;
+      const {email, password } = req.body;
       const repository = new UserRepository();
 
       const existeByEmail = await repository.getByEmail(email);
@@ -18,7 +18,7 @@ export class UserController {
         return HttpResponse.existe(res, "Email já existe no banco!!!");
       }
 
-      const user = new User(name, email, password);
+      const user = new User(email, password);
       //usersDB.push(user);
 
       await repository.create(user);

@@ -13,11 +13,11 @@ export class CreateTableUsers1690588835639 implements MigrationInterface {
             type: "uuid",
             isPrimary: true,
           },
-          {
-            name: "name",
-            type: "varchar",
-            length: "255",
-          },
+          // {
+          //   name: "name",
+          //   type: "varchar",
+          //   length: "255",
+          // },
           {
             name: "email",
             type: "varchar",

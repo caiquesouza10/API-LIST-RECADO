@@ -9,7 +9,7 @@ export class UserRepository {
   public async create(user: User) {
     const userEntity = this.connection.create({
       id: user.id,
-      name: user.name,
+      // name: user.name,
       email: user.email,
       password: user.password,
     });

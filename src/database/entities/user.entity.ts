@@ -4,8 +4,8 @@ import { RecadoEntity } from "./recado.entity";
 
 @Entity("users")
 export class UserEntity extends BaseEntity {
-  @Column()
-  name!: string;
+  // @Column()
+  // name!: string;
 
   @Column()
   email!: string;

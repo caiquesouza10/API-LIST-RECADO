@@ -182,7 +182,7 @@ export class RecadoController {
 
       return HttpResponse.success(
         res,
-        `Recados do ${user.name} arquivado com sucesso!`,
+        `Recados do ${user.email} arquivado com sucesso!`,
         listaRecadosUser?.map((recado) => recado.toJsonR()),
       );
     } catch (error: any) {
