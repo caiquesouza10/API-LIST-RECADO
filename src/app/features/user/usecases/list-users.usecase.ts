@@ -22,12 +22,12 @@ export class ListUserUsecase {
     const result = await repository.getAllUsers();
 
     //se não estiver em cache, sera o cache
-    await cacheRepository.set("users", result);
+    await cacheRepository.set("users", result.map((user) => user.toJsonU()));
 
     return {
       ok: true,
       message: "Users successuly listed",
-      data: result,
+      data: result.map((user) => user.toJsonU()),
       code: 200,
     };
   }

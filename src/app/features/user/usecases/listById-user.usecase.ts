@@ -17,6 +17,6 @@ export class ListByIdUserUsecase {
       return Return.notFound("User was not found");
     }
 
-    return Return.success("Users successuly listed by ID", result)
+    return Return.success("Users successuly listed by ID", result.toJsonU())
   }
 }
