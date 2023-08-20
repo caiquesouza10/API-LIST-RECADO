@@ -3,6 +3,7 @@ import { Result } from "../../../shared/contracts/result.contract";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { RecadoRepository } from "../repositories/recado.repository";
 import { Return } from "../../../shared/util/return.adapter";
+import { CacheRepository } from "../../../shared/database/repositories/cache.repository";
 
 interface UpdateRecadoParams {
   idUser: string;
@@ -41,6 +42,9 @@ export class UpdteRecadoUsecase {
     }
 
     await recadoRepository.update(recadoIndex);
+
+    const cacheRepository = new CacheRepository();
+    await cacheRepository.delete(`recado-${params.idUser}`);
 
     const recado = await recadoRepository.listTodosRecados({
       idUser: params.idUser,

@@ -17,7 +17,7 @@ export class Server {
 
   public static listen(app: Express) {
     app.listen(3333, () => {
-      console.log("API is running Recados");
+      console.log(`API is running Recados ${process.env.PORT}`);
     });
   }
 }
