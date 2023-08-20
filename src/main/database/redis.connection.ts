@@ -1,5 +1,5 @@
 import Redis from "ioredis";
-import config from "../config/database.config";
+import config from "../config/redis.config";
 
 export class CacheDatabase {
   // PROPRIEDADE
