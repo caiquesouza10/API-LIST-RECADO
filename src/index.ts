@@ -1,19 +1,10 @@
-import express from "express";
-import { usersRoutes } from "./routes/users.routes";
-import cors from "cors";
+import { Database } from "./main/database/database.connection";
+import { Server } from "./main/config/express.config";
 import "reflect-metadata";
-import { Database } from "./database/config/database.connection";
-
-const app = express();
-
-app.use(cors({ origin: "*" }));
-app.use(express.json());
-app.use("/user", usersRoutes());
 
 Database.connect().then(() => {
   console.log("DB is connected...");
 
-  app.listen(3333, () => {
-    console.log("API is running Recados");
-  });
+  const app = Server.create();
+  Server.listen(app);
 });
