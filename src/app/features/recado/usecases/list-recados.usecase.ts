@@ -21,20 +21,26 @@ export class LisRecadoUsecase {
     const cacheRepository = new CacheRepository();
     const cacheRecados = await cacheRepository.get(`recado-${params.idUser}`);
 
-    if (cacheRecados) {
-      return {
-        ok: true,
-        message: `Recados successfully listed of user ${user.email} (cache)`,
-        data: cacheRecados,
-        code: 200,
-      };
-    }
-
     const result = await new RecadoRepository().listTodosRecados({
       idUser: params.idUser,
       title: params.title,
       description: params.description,
     });
+
+    if (cacheRecados) {
+      return {
+        ok: true,
+        message: `Recados successfully listed of user ${user.email} (cache)`,
+        data: result?.map((recado) => recado.toJsonR()),
+        code: 200,
+      };
+    }
+
+    // const result = await new RecadoRepository().listTodosRecados({
+    //   idUser: params.idUser,
+    //   title: params.title,
+    //   description: params.description,
+    // });
 
     await cacheRepository.set(`recado-${params.idUser}`, result);
 
