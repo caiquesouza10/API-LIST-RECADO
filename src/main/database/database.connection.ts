@@ -13,5 +13,6 @@ export class Database {
   // METODO - so no index || server
   public static async connect() {
     this._connection = await dataSource.initialize();
+    console.log("DB is connected...");
   }
 }
