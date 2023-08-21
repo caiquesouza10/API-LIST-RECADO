@@ -34,7 +34,7 @@ export class ListRecadoArquivadoUsecase {
       };
     }
 
-    await cacheRepository.setEx(`recado-${params.idUser}`,500, listaRecadosUser);
+    await cacheRepository.setEx(`recadosArquivados-${params.idUser}`,500, listaRecadosUser);
 
     return {
       ok: true,
