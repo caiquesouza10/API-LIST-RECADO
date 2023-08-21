@@ -1,5 +1,6 @@
 import { Recado } from "../../../models/recado.model";
 import { Result } from "../../../shared/contracts/result.contract";
+import { CacheRepository } from "../../../shared/database/repositories/cache.repository";
 import { Return } from "../../../shared/util/return.adapter";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { RecadoRepository } from "../repositories/recado.repository";
@@ -20,6 +21,20 @@ export class ListRecadoArquivadoUsecase {
     const listaRecadosUser = await recadoRepository.ListararRecadosArquivados({
       idUser: params.idUser,
     });
+
+    const cacheRepository = new CacheRepository();
+    const cacheRecados = await cacheRepository.get(`recado-${params.idUser}`);
+
+    if (cacheRecados) {
+      return {
+        ok: true,
+        message: `Recados do ${user.email} arquivado com sucesso! (cache)`,
+        data: listaRecadosUser?.map((recado) => recado.toJsonR()),
+        code: 200,
+      };
+    }
+
+    await cacheRepository.setEx(`recado-${params.idUser}`,500, listaRecadosUser);
 
     return {
       ok: true,

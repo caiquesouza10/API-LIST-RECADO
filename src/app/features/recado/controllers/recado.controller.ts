@@ -21,7 +21,7 @@ export class RecadoController {
       const usecase = new CreateRecadoUsecase();
       const result = await usecase.execute({ title, description, idUser });
 
-      return res.status(result.code).send(result)
+      return res.status(result.code).send(result);
     } catch (error: any) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
         ok: false,
@@ -36,10 +36,13 @@ export class RecadoController {
       const { title, description } = req.query;
 
       const usecase = new LisRecadoUsecase();
-      const result = await usecase.execute({idUser});
+      const result = await usecase.execute({
+        idUser,
+        title: title as string,
+        description: description as string,
+      });
 
-      return res.status(result.code).send(result)
-      
+      return res.status(result.code).send(result);
     } catch (error: any) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
         ok: false,
@@ -53,10 +56,9 @@ export class RecadoController {
       const { idUser, idRecados } = req.params;
 
       const usecase = new DeleteRecadoUsecase();
-      const result = await usecase.execute({idUser, idRecados });
+      const result = await usecase.execute({ idUser, idRecados });
 
-      return res.status(result.code).send(result)
-
+      return res.status(result.code).send(result);
     } catch (error: any) {
       return res.status(500).send({
         ok: false,
@@ -69,7 +71,7 @@ export class RecadoController {
     try {
       const { idUser, idRecados } = req.params;
       const { title, description, arquivado } = req.body;
- 
+
       const result = await new UpdteRecadoUsecase().execute({
         idUser,
         idRecados,
@@ -78,8 +80,7 @@ export class RecadoController {
         arquivado,
       });
 
-      return res.status(result.code).send(result)
-      
+      return res.status(result.code).send(result);
     } catch (error: any) {
       return res.status(500).send({
         ok: false,
@@ -93,9 +94,9 @@ export class RecadoController {
       const { idUser } = req.params;
 
       const usecase = new ListRecadoArquivadoUsecase();
-      const result = await usecase.execute({idUser});
+      const result = await usecase.execute({ idUser });
 
-      return res.status(result.code).send(result)
+      return res.status(result.code).send(result);
     } catch (error: any) {
       return res.status(500).send({
         ok: false,

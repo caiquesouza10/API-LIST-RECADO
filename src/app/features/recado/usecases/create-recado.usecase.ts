@@ -1,5 +1,6 @@
 import { Recado } from "../../../models/recado.model";
 import { Result } from "../../../shared/contracts/result.contract";
+import { CacheRepository } from "../../../shared/database/repositories/cache.repository";
 import { Return } from "../../../shared/util/return.adapter";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { RecadoRepository } from "../repositories/recado.repository";
@@ -25,7 +26,10 @@ export class CreateRecadoUsecase {
       const newErrand = new Recado(params.title, params.description, user);
 
       await new RecadoRepository().criarRecado(newErrand);
-  
+
+      const cacheRepository = new CacheRepository();
+      await cacheRepository.setEx(`recado-${user.email}`, 500, newErrand.toJsonR());
+
     return {
         ok: true,
         message: `Recado for ${user.email}, was sucessfully created`,

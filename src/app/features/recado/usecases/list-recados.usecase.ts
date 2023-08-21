@@ -42,7 +42,7 @@ export class LisRecadoUsecase {
     //   description: params.description,
     // });
 
-    await cacheRepository.set(`recado-${params.idUser}`, result);
+    await cacheRepository.setEx(`recados-${params.idUser}`,500, result);
 
     return {
       ok: true,

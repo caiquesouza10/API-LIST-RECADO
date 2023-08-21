@@ -1,4 +1,5 @@
 import { Result } from "../../../shared/contracts/result.contract";
+import { CacheRepository } from "../../../shared/database/repositories/cache.repository";
 import { Return } from "../../../shared/util/return.adapter";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { RecadoRepository } from "../repositories/recado.repository";
@@ -23,6 +24,9 @@ export class DeleteRecadoUsecase {
     if (delitedRecados < 0) {
       return Return.notFound("Recado");
     }
+
+    const cacheRepository = new CacheRepository();
+    await cacheRepository.delete("recado");
 
     const recados = await recadoRepository.listTodosRecados({
       idUser: params.idUser,
