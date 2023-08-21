@@ -1,7 +1,6 @@
 import { Not } from "typeorm";
 import { Database } from "../../../../main/database/database.connection";
-// import { RecadoEntity } from "../../../shared/database/entities/recado.entity";
-import { RecadoEntity } from "../../../../database/entities/recado.entity";
+import { RecadoEntity } from "../../../shared/database/entities/recado.entity";
 import { Recado } from "../../../models/recado.model";
 import { UserRepository } from "../../user/repositories/user.repository";
 
